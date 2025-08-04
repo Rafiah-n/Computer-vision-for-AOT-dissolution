@@ -71,7 +71,7 @@ def build_replay_yaml(replay_dir, output_dir):
         shutil.copy(img_path, img_dir)
         shutil.copy(lbl_path, lbl_dir)
     
-    # Copy buffer data to temp folder
+    # Copy buffer validation data to temp folder
     for img_path, lbl_path in zip(replay_val_images, replay_val_labels):
         shutil.copy(img_path, img_val_dir)
         shutil.copy(lbl_path, lbl_val_dir)
@@ -126,3 +126,4 @@ for i, task in enumerate(tasks):
 
     # Add this task to replay for future
     past_tasks.append(task)
+
