@@ -2,6 +2,15 @@ import os
 import cv2
 import numpy as np
 from glob import glob
+import os
+import cv2
+import numpy as np
+from glob import glob
+
+class_colours = {
+    0: 255,    # Class 0 -> white 255
+    1: 150,   # Class 1 -> gray value 150
+}
 
 tasks = [
     "10%-AOT-Dissolution-Tracking", 
@@ -10,10 +19,11 @@ tasks = [
     "70%-AOT-Dissolution-Tracking"
 ]
 
-types = ["train", "test", "valid"]
+
+splits = ["train", "test", "valid"]
 
 for task in tasks:
-  for a in types:
+  for s in splits:
     img_dir = f"dataset-augmented/{task}/{a}/images"
     label_dir = f"dataset-augmented/{task}/{a}/labels"
     mask_out_dir = f"sgrnade2/dataset-augmented/{task}/{a}/masks"
@@ -32,7 +42,8 @@ for task in tasks:
                     points = np.array(coords, dtype=np.float32).reshape(-1, 2)
                     points[:, 0] *= w
                     points[:, 1] *= h
-                    cv2.fillPoly(mask, [points.astype(np.int32)], color=255)
+                    
+                    colour = class_colours.get(int(cls), 255) # default to 255 if class not in dict
+                    cv2.fillPoly(mask, [points.astype(np.int32)], color=colour)
     
         cv2.imwrite(os.path.join(mask_out_dir, os.path.basename(img_path).replace(".jpg", ".png")), mask)
-    
