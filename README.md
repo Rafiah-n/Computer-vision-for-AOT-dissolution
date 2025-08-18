@@ -1,9 +1,22 @@
 # Computer vision for dissolution of AOT in a Water-Decane-AOT system using task-based incremental learning
 
+2 Versions: 
+YOLO segmentation:
+Using Ultralytics pipeline 
 
+UNet segmentation:
+- Pretrained ResNet18 on ImageNet weights
+- Task-Incremental Online Learning
+- Memory Replay Buffers
+- EWC Regularisation (Forgetting score calculation using Fischer Matrix)
+
+Trained Model Weights
+Downloadable from: *LINK*
 
 best_complete.pt - YOLO model for segmenting AOT
+
 vial_best.pt - YOLO model for detecting Vials
+
 trained_unet.pt - UNet model for segmenting AOT
 
 
