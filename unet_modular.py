@@ -7,17 +7,17 @@ import time
 import matplotlib.pyplot as plt
 
 # Models
-VIAL_MODEL = YOLO("C:/Users/rafia/Documents/internship/vial_best.pt")
+VIAL_MODEL = YOLO("vial_best.pt")
 SEG_MODEL = smp.Unet("resnet18", encoder_weights="imagenet", classes=3)
-SEG_MODEL.load_state_dict(torch.load("C:/Users/rafia/Documents/internship/trained_unet.pt", map_location="cpu"))
+SEG_MODEL.load_state_dict(torch.load("trained_unet.pt", map_location="cpu"))
 SEG_MODEL.eval()
 
 # Class Variables
 VIAL_CLASS_ID = 0
 COLOURS = [
-    (0, 0, 255),     # class 0 - red
-    (255, 0, 0),   # class 1 - blue
-    (0, 0, 0)    # class 2 - black placeholder (no overlay)
+    (0, 0, 255),     # class 0 - red (AOT)
+    (255, 0, 0),   # class 1 - blue (Stirring Cylinder)
+    (0, 0, 0)    # class 2 - black placeholder (no overlay) (Background)
 ]
 NUM_CLASSES = 3
 
@@ -141,3 +141,4 @@ def plot(times, aot_sizes, starting_size):
 
     plt.tight_layout()
     plt.show()
+
