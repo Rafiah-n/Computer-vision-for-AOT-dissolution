@@ -2,8 +2,9 @@
 
 
 
-best_complete.pt - YOLO model for detecting AOT
-
+best_complete.pt - YOLO model for segmenting AOT
+vial_best.pt - YOLO model for detecting Vials
+trained_unet.pt - UNet model for segmenting AOT
 
 
 
