@@ -1,8 +1,8 @@
 # Computer vision for dissolution of AOT in a Water-Decane-AOT system using task-based incremental learning
 
-2 Versions: 
+# 2 Versions: 
 YOLO segmentation:
-Using Ultralytics pipeline 
+- Using Ultralytics pipeline (restrictive)
 
 UNet segmentation:
 - Pretrained ResNet18 on ImageNet weights
