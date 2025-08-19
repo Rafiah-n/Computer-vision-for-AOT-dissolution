@@ -1,0 +1,9 @@
+opencv-python
+numpy
+torch
+matplotlib
+Pillow
+pygrabber
+pandas
+segmentation-models-pytorch
+ultralytics
