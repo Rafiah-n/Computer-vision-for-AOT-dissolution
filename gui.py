@@ -27,6 +27,7 @@ interval_pixels = []
 timer_job = None
 interval_ms = 1000
 experiment_running = False
+video_writer = None 
 
 seg_unet = unet_modular.SEG_MODEL
 vial_yolo = unet_modular.VIAL_MODEL
@@ -85,12 +86,14 @@ def update_feed():
     ret, frame = cap.read()
     imgtk = None
     if ret:
+        frame = cv.resize(frame, (128, 128))
         selected_frame = frame.copy()
         frame_rgb = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
         img = Image.fromarray(frame_rgb)
         imgtk = ImageTk.PhotoImage(image=img)
         video_panel.imgtk = imgtk
         video_panel.configure(image=imgtk)
+
         if experiment_running:
             _, annotated_frame, _, _ = unet_modular.segment_frame(selected_frame)
             segmented_img_rgb = cv.cvtColor(annotated_frame, cv.COLOR_BGR2RGB)
@@ -98,7 +101,13 @@ def update_feed():
             imgtk = ImageTk.PhotoImage(image=img)
             segmented_panel.imgtk = imgtk
             segmented_panel.configure(image=imgtk)
+
+        # Write to video if writer exists
+        if video_writer:
+            video_writer.write(annotated_frame)
+    
     video_panel.after(10, update_feed)
+
 
 # Segmentation Function
 def segment():
@@ -113,7 +122,7 @@ def segment():
 
     masks, annotated_frame, area_pixels, stir_area = unet_modular.segment_frame(selected_frame)
 
-    # Display the segmented image
+    # Display the segmented image (moved into update feed method)
     # segmented_img_rgb = cv.cvtColor(annotated_frame, cv.COLOR_BGR2RGB)
     # img = Image.fromarray(segmented_img_rgb)
     # imgtk = ImageTk.PhotoImage(image=img)
@@ -146,7 +155,7 @@ def segment():
 
             # Update GUI
             T.delete("1.0", tk.END)
-            T.insert(tk.END, f"[{elapsed_minutes:.1f} min] AOT size: {avg_area} px²\nStirring Cylinder: {stir_area}")
+            T.insert(tk.END, f"[{elapsed_minutes:.1f} min] AOT size: {avg_area} px²\nStirring Cylinder: {stir_area} px²")
 
     if (unet_modular.check_dissolved(aot_sizes, interval_ms)):
         finish = simpledialog.askfloat("AOT Dissolved", "No AOT has been detected for 20 minutes, we assume the AOT has dissolved\n Finish Experiment?")
@@ -155,8 +164,17 @@ def segment():
 
 
 def start_timer():
-    global timer_job, interval_ms, start_time, measurement_interval, experiment_running
+    global timer_job, interval_ms, start_time, measurement_interval, experiment_running, video_writer
     experiment_running = True
+    # Create VideoWriter
+    fourcc = cv.VideoWriter_fourcc(*'mp4v')
+    filepath = filedialog.asksaveasfilename(defaultextension=".mp4",
+                                            filetypes=[("MP4 files", "*.mp4")],
+                                            title=f"Enter Filename to Save Annotated Video")
+    if filepath:
+        height, width, _ = selected_frame.shape
+        video_writer = cv.VideoWriter(filepath, fourcc, 20.0, (width, height))
+    
     try:
         value = float(interval_entry.get())
     except ValueError:
@@ -184,13 +202,19 @@ def recurring_capture(interval_ms):
     timer_job = root.after(interval_ms, lambda: recurring_capture(interval_ms))
 
 def stop_timer():
-    global timer_job, experiment_running
+    global timer_job, experiment_running, video_writer
     experiment_running = False
     if timer_job:
         root.after_cancel(timer_job)
         timer_job = None
     start_timer_btn.config(state="normal")
     stop_timer_btn.config(state="disabled")
+
+    # Release video writer if exists
+    if video_writer:
+        video_writer.release()
+        video_writer = None
+        messagebox.showinfo("Saved", "Annotated video saved successfully.")
 
 def plot():
     global interval_ms, aot_sizes
@@ -203,14 +227,25 @@ def plot():
     time_points = [i * interval_m for i in range(len(aot_sizes))]
 
     # Create the plot
-    plt.figure(figsize=(8, 5))
+    plt.figure(figsize=(10, 5))
+    plt.subplot(1, 2, 1)
     plt.plot(time_points, aot_sizes, marker='o', linestyle='-', color='b')
     plt.xlabel("Time (minutes)")
     plt.ylabel("AOT Size (px²)")
     plt.title("AOT Dissolution Over Time")
+
+    # Plot percentage change
+    percent_changes = [((size - starting_size) / starting_size) * 100 for size in aot_sizes]
+    plt.subplot(1, 2, 2)
+    plt.plot(time_points, percent_changes, marker='o', color='orange')
+    plt.title("AOT Size Change (%) Over Time")
+    plt.xlabel("Time (minutes)") 
+    plt.ylabel("Change (%)")
+
     plt.grid(True)
     plt.tight_layout()
     plt.show()
+
 
 def reset_experiment():
     global aot_sizes, times, starting_size, start_time, experiment_running
@@ -236,7 +271,7 @@ def save_data():
         messagebox.showerror("No Data", "No results to save.")
         return
     df = pd.DataFrame({"Time (min)": times, "AOT Size (px²)": aot_sizes})
-    filepath = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV Files", "*.csv")])
+    filepath = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV Files", "*.csv")],  title=f"Enter Filename to Save CSV")
     if filepath:
         df.to_csv(filepath, index=False)
         messagebox.showinfo("Saved", f"Results saved to {filepath}")
@@ -247,6 +282,8 @@ def finish_experiment():
     if not aot_sizes:
         messagebox.showerror("No Data", "No experiment data to finish.")
         return
+    
+    stop_timer()
     plot()
     save_data()
     reset_experiment()
@@ -280,10 +317,10 @@ finish_btn.pack(side="bottom", pady=10)
 
 T = tk.Text(root, height = 4, width = 45)
 T.pack()
-T.insert(tk.END, f"Info Here")
+T.insert(tk.END, f"Info Here:")
 
 # Timer setup widgets
-tk.Label(root, text="Interval:").pack(side="top", pady=(10,0))
+tk.Label(root, text="Interval (AOT Size Calculated at):").pack(side="top", pady=(10,0))
 interval_entry = tk.Entry(root)
 interval_entry.insert(0, "30")    # default = 30
 interval_entry.pack(side="top", padx=10)
