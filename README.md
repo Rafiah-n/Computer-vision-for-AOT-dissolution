@@ -25,7 +25,7 @@ Downloadable from: (https://drive.google.com/drive/folders/1exHoOWDJipvwZr2eqmvY
 1. Clone the repository
 2. Install Requirements
    ```pip install -r requirements.txt```
-4. Download model weights from the above link and move them into the
+4. Download model weights from the above link and move them into the cloned repo
    
 ### Training (with new data)
 - Annotate data (using Roboflow) and download in YOLOV11 format
