@@ -48,36 +48,61 @@ def get_vial_dimensions_gui(root):
 def choose_input():
     global cap
     choice = messagebox.askquestion("Input Source", "Run from live camera?", icon="question")
+    
     if choice == "yes":
-        graph = FilterGraph()
-        cams = graph.get_input_devices()
-        if not cams:
-            return messagebox.showerror("No Cameras", "No webcams found.")
+        if platform.system() == "Darwin":  # macOS
+            idx_str = simpledialog.askstring(
+                "Select Camera",
+                "Enter camera index (usually 0 for built-in webcam, 1+ for external):"
+            )
+            if idx_str is None:
+                return
 
-        cam_name = simpledialog.askstring(
-            "Select Camera",
-            "Available cameras:\n" + "\n".join(f"{i}: {n}" for i, n in enumerate(cams)) +
-            "\n\nEnter the index of your choice:"
-        )
-        if cam_name is None:
-            return
+            try:
+                idx = int(idx_str)
+            except ValueError:
+                return messagebox.showerror("Invalid selection", "Please enter a valid index.")
 
-        try:
-            idx = int(cam_name)
-            if idx < 0 or idx >= len(cams):
-                raise ValueError
-        except ValueError:
-            return messagebox.showerror("Invalid selection", "Please enter a valid index.")
+            cap.release()
+            cap = cv.VideoCapture(idx, cv.CAP_AVFOUNDATION)
+        else:  # Windows/Linux
+            graph = FilterGraph()
+            cams = graph.get_input_devices()
+            if not cams:
+                return messagebox.showerror("No Cameras", "No webcams found.")
 
-        cap.release()
-        cap = cv.VideoCapture(idx, cv.CAP_DSHOW)
+            cam_name = simpledialog.askstring(
+                "Select Camera",
+                "Available cameras:\n" + "\n".join(f"{i}: {n}" for i, n in enumerate(cams)) +
+                "\n\nEnter the index of your choice:"
+            )
+            if cam_name is None:
+                return
+
+            try:
+                idx = int(cam_name)
+                if idx < 0 or idx >= len(cams):
+                    raise ValueError
+            except ValueError:
+                return messagebox.showerror("Invalid selection", "Please enter a valid index.")
+
+            cap.release()
+            cap = cv.VideoCapture(idx)
+
+        if not cap.isOpened():
+            return messagebox.showerror("Camera Error", f"Could not open camera {idx}")
 
     else:
-        path = filedialog.askopenfilename(title="Select video file", filetypes=[("Video", "*.mp4 *.avi *.mov")])
+        path = filedialog.askopenfilename(
+            title="Select video file",
+            filetypes=[("Video", "*.mp4 *.avi *.mov")]
+        )
         if not path:
             return
         cap.release()
         cap = cv.VideoCapture(path)
+        if not cap.isOpened():
+            return messagebox.showerror("File Error", "Could not open selected video file.")
 
 # Feed Update
 def update_feed():
