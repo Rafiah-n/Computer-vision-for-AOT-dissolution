@@ -1,6 +1,6 @@
 # Computer vision for dissolution of AOT in a Water-Decane-AOT system using task-based incremental learning
 ## Project Description:
-Automated segmentation of AOT within a system, calculating size in pixel area with a benchmark of 100% AOT - the first detected amount. Produces segmented video, plots and CSV data to visualise the dissolution of AOT over time.
+Automated segmentation of AOT within a system, calculating size in pixel area with a benchmark of 100% AOT - the initial detected amount. Produces segmented video, plots and CSV data to visualise the dissolution of AOT over time.
 
 ## 2 Versions: 
 YOLO segmentation:
