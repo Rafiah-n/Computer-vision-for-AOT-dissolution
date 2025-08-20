@@ -21,6 +21,8 @@ Downloadable from: (https://drive.google.com/drive/folders/1exHoOWDJipvwZr2eqmvY
 - vial_best.pt - YOLO model for detecting Vials
 - trained_unet.pt - UNet model for segmenting AOT
 
+- Test video downloadable from: https://theuniversityofliverpool-my.sharepoint.com/:f:/r/personal/rafiahn_liverpool_ac_uk/Documents/AOT%20Dissolution?csf=1&web=1&e=gmdKsK
+
 ## Usage
 1. Clone the repository
 2. Install Requirements
