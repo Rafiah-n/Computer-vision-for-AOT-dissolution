@@ -225,19 +225,21 @@ def plot():
     # X-axis values: time in seconds
     interval_m = interval_ms / 60000 if interval_ms > 0 else 1
     time_points = [i * interval_m for i in range(len(aot_sizes))]
+    aot_sizes_plot = aot_sizes[3:]
+    time_points_plot = time_points[3:]
 
     # Create the plot
     plt.figure(figsize=(10, 5))
     plt.subplot(1, 2, 1)
-    plt.plot(time_points, aot_sizes, marker='o', linestyle='-', color='b')
+    plt.plot(time_points_plot, aot_sizes_plot, marker='.', linestyle='-', color='b')
     plt.xlabel("Time (minutes)")
     plt.ylabel("AOT Size (px²)")
     plt.title("AOT Dissolution Over Time")
 
     # Plot percentage change
-    percent_changes = [((size - starting_size) / starting_size) * 100 for size in aot_sizes]
+    percent = [(size / aot_sizes_plot[0]) * 100 for size in aot_sizes_plot]
     plt.subplot(1, 2, 2)
-    plt.plot(time_points, percent_changes, marker='o', color='orange')
+    plt.plot(time_points_plot, percent, marker='.', color='orange')
     plt.title("AOT Size Change (%) Over Time")
     plt.xlabel("Time (minutes)") 
     plt.ylabel("Change (%)")
