@@ -28,6 +28,7 @@ Downloadable from: (https://drive.google.com/drive/folders/1exHoOWDJipvwZr2eqmvY
 4. Download model weights from the above link and move them into the cloned repo
    
 ### Training (with new data)
+- Record new video data and run frame_extraction.py to extract frames from video (can be used for multiple vials recorded simultaneously by adjusting parameters)
 - Annotate data (using Roboflow) and download in YOLOV11 format
 - Run create_masks.py to create masks for each image within the dataset
   - Adjust variables (tasks, colours etc.) within both scripts for any new classes added
