@@ -21,6 +21,21 @@ Downloadable from: (https://drive.google.com/drive/folders/1exHoOWDJipvwZr2eqmvY
 - vial_best.pt - YOLO model for detecting Vials
 - trained_unet.pt - UNet model for segmenting AOT
 
+## Usage
+1. Clone the repository
+2. Install Requirements
+   ```pip install -r requirements.txt```
+4. Download model weights from the above link and move them into the
+   
+### Training (with new data)
+- Annotate data (using Roboflow) and download in YOLOV11 format
+- Run create_masks.py to create masks for each image within the dataset
+  - Adjust variables (tasks, colours etc.) within both scripts for any new classes added
+- Run training_unet.py (To be added)
 
+### Running the GUI
+```python gui_unet.py```
+- Load video or use Camera: select specific camera index or .mp4, .avi, or .mov file.
+- Save results: Annotated video is stored with overlays, and prompted to save the CSV files.
 
 The use of YOLO from Ultralytics was made under the AGPL-3.0 License.
