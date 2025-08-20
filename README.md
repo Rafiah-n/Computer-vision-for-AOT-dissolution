@@ -35,7 +35,7 @@ Downloadable from: (https://drive.google.com/drive/folders/1exHoOWDJipvwZr2eqmvY
 
 ### Running the GUI
 ```python gui_unet.py```
-- Load video or use Camera: select specific camera index or .mp4, .avi, or .mov file.
-- Save results: Annotated video is stored with overlays, and prompted to save the CSV files.
+- Prompted load video or use camera: select specific camera index or .mp4, .avi, or .mov file.
+- Prompted to save results: annotated video is stored with overlays, and prompted to save the CSV file.
 
 The use of YOLO from Ultralytics was made under the AGPL-3.0 License.
