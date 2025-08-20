@@ -2,17 +2,18 @@
 ## Project Description:
 Automated segmentation of AOT within a system, calculating size in pixel area with a benchmark of 100% AOT - the initial detected amount. Produces segmented video, plots and CSV data to visualise the dissolution of AOT over time.
 
-## 2 Versions: 
-YOLO segmentation:
-- Using Ultralytics pipeline (restrictive)
-
-UNet segmentation:
+## Versions: 
+1. UNet segmentation:
 - Pretrained ResNet18 on ImageNet weights
 - Task-Incremental Online Learning
 - Memory Replay Buffers
 
+2. YOLO segmentation:
+- Using Ultralytics pipeline (restrictive)
+
 Future Ideas:
-- EWC Regularisation (Forgetting score calculation using Fischer Matrix)
+- EWC Regularisation
+- Forgetting score calculation using Fischer Matrix (started)
 
 ## Trained Model Weights
 Downloadable from: (https://drive.google.com/drive/folders/1exHoOWDJipvwZr2eqmvYhEoa_8QTodJB?usp=sharing)
