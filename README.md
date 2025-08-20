@@ -35,7 +35,7 @@ Downloadable from: (https://drive.google.com/drive/folders/1exHoOWDJipvwZr2eqmvY
 - Run training_unet.py (To be added)
 
 ### Running the GUI
-```python gui_unet.py```
+```python gui.py```
 - Prompted load video or use camera: select specific camera index or .mp4, .avi, or .mov file.
 - Prompted to save results: annotated video is stored with overlays, and prompted to save the CSV file.
 
