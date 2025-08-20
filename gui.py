@@ -9,6 +9,7 @@ from pygrabber.dshow_graph import FilterGraph
 import unet_modular
 import matplotlib.pyplot as plt
 import pandas as pd
+import platform
 
 # Global Variables
 cap = cv.VideoCapture("noFeed.jpg")
